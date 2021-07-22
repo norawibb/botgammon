@@ -1,7 +1,8 @@
 #include "Game.hpp"
 
 SDL_Rect leftR, rightR, midR, ballR;
-IsoTriangle testTriangle;
+IsoTriangle* testTriangle1;
+IsoTriangle* testTriangle2;
 
 
 
@@ -314,12 +315,9 @@ void Game::BoardSet() // size objects and place them
 	ballR.x = (resolution_x / 2) - (ballR.w / 2);
 	ballR.y = (resolution_y / 2) - (ballR.h / 2);
 
+	testTriangle1 = new IsoTriangle(resolution_x / 4, resolution_y / 2, resolution_y / 8, resolution_y / 3, 0);
+	testTriangle2 = new IsoTriangle(resolution_x * 3 / 4, resolution_y / 2, resolution_y / 8, resolution_y / 3, 0);
 
-	testTriangle.x = resolution_x / 2;
-	testTriangle.y = resolution_y / 2;
-	testTriangle.w = resolution_y / 8;
-	testTriangle.h = resolution_y / 3;
-	testTriangle.r = 0;
 	//testTriangle.color = SDL_Color{ 255, 0, 0 };
 }
 
@@ -328,7 +326,8 @@ void Game::update()
 {
 	
 	rndtime++;
-	testTriangle.r = (testTriangle.r + 1) % 360;
+	testTriangle1->rotation = (testTriangle1->rotation + 1) % 360;
+	testTriangle2->rotation = (testTriangle2->rotation - 1) % 360;
 	//std::cout << testTriangle.r << std::endl;
 	/*if (rndtime >= 250)
 	{
@@ -359,8 +358,9 @@ void Game::render()
 
 	//Move to center of the screen
 	glTranslatef(resolution_x / 2.f, resolution_y / 2.f, 0.f);
-	
-	DrawTriangle(gProgramID, gVertexPos2DLocation, &testTriangle);
+	testTriangle1->Draw(gProgramID, gVertexPos2DLocation);
+	testTriangle2->Draw(gProgramID, gVertexPos2DLocation);
+
 	SDL_GL_SwapWindow(window);
 	/*
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
