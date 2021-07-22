@@ -1,7 +1,7 @@
 #include "Triangle.hpp"
 
 
-void SDL_RenderFillIsoTriangle(SDL_Renderer* renderer, IsoTriangle* triangle) {
+/*void SDL_RenderFillIsoTriangle(SDL_Renderer* renderer, IsoTriangle* triangle) {
 	//SDL_SetRenderDrawColor(renderer, triangle->color.r, triangle->color.g, triangle->color.b, triangle->color.a);
 	floatVector2D v1, v2, v3;
 	v1.x = triangle->x - (cos(triangle->r * M_PI / 180.0f)*triangle->w);
@@ -18,16 +18,7 @@ void SDL_RenderFillIsoTriangle(SDL_Renderer* renderer, IsoTriangle* triangle) {
 }
 
 
-GLuint gVBO = 0;
-GLuint gIBO = 0;
-GLfloat triVertexData[] =
-{
-	-0.5f, -0.5f, //v1x, v1y
-	 0.5f, -0.5f, //v2x, 
-	 0.5f,  0.5f
-};
-//IBO data
-GLuint triIndexData[] = { 0, 1, 2 };
+
 
 void DrawTriangle(GLuint gProgramID, GLint gVertexPos2DLocation, IsoTriangle* triangle) {
 	floatVector2D v1, v2, v3;
@@ -49,6 +40,64 @@ void DrawTriangle(GLuint gProgramID, GLint gVertexPos2DLocation, IsoTriangle* tr
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * sizeof(GLuint), triIndexData, GL_STATIC_DRAW);
 
 	
+	//Bind program
+	glUseProgram(gProgramID);
+
+	//Enable vertex position
+	glEnableVertexAttribArray(gVertexPos2DLocation);
+
+	//Set vertex data
+	glBindBuffer(GL_ARRAY_BUFFER, gVBO);
+	glVertexAttribPointer(gVertexPos2DLocation, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), NULL);
+
+	//Set index data and render
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIBO);
+	glDrawElements(GL_TRIANGLE_FAN, 3, GL_UNSIGNED_INT, NULL);
+
+	//Disable vertex position
+	glDisableVertexAttribArray(gVertexPos2DLocation);
+
+	//Unbind program
+	glUseProgram(NULL);
+}*/
+
+IsoTriangle::IsoTriangle()
+{
+
+}
+IsoTriangle::IsoTriangle(int x, int y, int w, int h, int r)
+{
+	xpos = x;
+	ypos = y;
+	width = w;
+	height = h;
+	rotation = r;
+}
+IsoTriangle::~IsoTriangle()
+{
+
+}
+
+void IsoTriangle::Draw(GLuint gProgramID, GLint gVertexPos2DLocation)
+{
+	triVertexData[0] = ((xpos - (cos(rotation * M_PI / 180.0f) * width)) / 800 - 1);
+	triVertexData[1] = -((ypos - (sin(rotation * M_PI / 180.0f) * width)) / 450 - 1);
+	triVertexData[2] = ((xpos + (sin(rotation * M_PI / 180.0f) * height)) / 800 - 1);
+	triVertexData[3] = -((ypos - (cos(rotation * M_PI / 180.0f) * height)) / 450 - 1);
+	triVertexData[4] = ((xpos + (cos(rotation * M_PI / 180.0f) * width)) / 800 - 1);
+	triVertexData[5] = -((ypos + (sin(rotation * M_PI / 180.0f) * width)) / 450 - 1);
+
+	//Create VBO
+	glGenBuffers(1, &gVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, gVBO);
+	glBufferData(GL_ARRAY_BUFFER, 2 * 3 * sizeof(GLfloat), triVertexData, GL_STATIC_DRAW); // 2 * 3 is sizeof(triVertexData[])
+
+	//Create IBO
+	glGenBuffers(1, &gIBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * sizeof(GLuint), triIndexData, GL_STATIC_DRAW);
+
+
 	//Bind program
 	glUseProgram(gProgramID);
 

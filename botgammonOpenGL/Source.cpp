@@ -5,6 +5,11 @@
 #include "Functions.hpp"
 
 /* TODO:
+* FIGURE OUT HOW TO STORE GVBO WITH MULTIPLE TRIANGLES
+* 
+* Make GameObject class and have triangle inherit the class
+*	has xpos ypos width height rotation *color
+* 
 * Continue cleaning up and implementing OpenGL w/ LazyFoo
 * Move preferences into cpp hpp files of their own
 * Clean up triangles / rendering, vvv
