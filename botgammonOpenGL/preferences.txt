@@ -1,0 +1,3 @@
+false-	// fullscreen
+1600-	// resolution_x
+900-	// resolution_y
